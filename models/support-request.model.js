@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+// const replySchema = new mongoose.Schema(
+//   {
+//     reply: {
+//       type: String,
+//       required: true,
+//     },
+//     repliedBy: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "User",
+//       required: true,
+//     },
+//   },
+//   { timestamps: true }
+// );
+
 const supportRequestSchema = new mongoose.Schema(
   {
     user: {
@@ -14,6 +29,7 @@ const supportRequestSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["OPEN", "RESOLVED"],
+      default: "OPEN",
     },
     reply: String,
     repliedBy: {
