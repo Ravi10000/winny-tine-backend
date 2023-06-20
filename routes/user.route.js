@@ -1,9 +1,29 @@
 import express from "express";
-import { fetchUser, isValidUser } from "../middlewares/auth.middleware.js";
-import { updateUserDetails } from "../controllers/user.controller.js";
+import {
+  fetchUser,
+  isAdmin,
+  isValidUser,
+} from "../middlewares/auth.middleware.js";
+import {
+  checkUsernameAvailablility,
+  getAllUsers,
+  sendProfile,
+  updateUserDetails,
+} from "../controllers/user.controller.js";
+import upload from "../middlewares/upload.middleware.js";
 
 const router = express.Router();
 
-router.put("/", fetchUser, isValidUser, updateUserDetails);
+router.put(
+  "/",
+  fetchUser,
+  isValidUser,
+  upload.single("profilePic"),
+  updateUserDetails
+);
+
+router.get("/profile", fetchUser, isValidUser, sendProfile);
+router.post("/check-username", checkUsernameAvailablility);
+router.get("/", fetchUser, isValidUser, isAdmin, getAllUsers);
 
 export default router;

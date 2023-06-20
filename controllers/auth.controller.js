@@ -3,24 +3,26 @@ import VerificationRequest from "../models/verification-request.model.js";
 import { customOtpGen } from "otp-gen-agent";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import referralCodeGenerator from "referral-code-generator";
 
 export async function generateOTP(req, res) {
-  const { phoneNumber, countryCode } = req.body;
-  if (!phoneNumber || !countryCode) {
+  const { mobile } = req.body;
+
+  if (!mobile) {
     return res.status(400).json({
       status: "error",
-      message: "phoneNumber and countryCode are required",
+      message: "mobile required",
     });
   }
+
   const otp = await customOtpGen({ length: 6, chars: "0123456789" });
   console.log({ otp });
+
   const otpHash = await bcrypt.hash(otp, 10);
   await VerificationRequest.create({
-    phoneNumber,
-    countryCode,
+    mobile,
     otpHash,
   });
+
   res.status(200).json({
     status: "success",
     message: "OTP Generated Successfully",
@@ -28,16 +30,17 @@ export async function generateOTP(req, res) {
 }
 
 export async function verifyOTP(req, res) {
-  const { phoneNumber, countryCode, otp } = req.body;
-  if (!phoneNumber || !countryCode || !otp) {
+  const { mobile, otp } = req.body;
+
+  if (!mobile || !otp) {
     return res.status(400).json({
       status: "error",
-      message: "phoneNumber, countryCode and otp are required",
+      message: "mobile and otp are required",
     });
   }
+
   const verificationRequest = await VerificationRequest.findOne({
-    phoneNumber,
-    countryCode,
+    mobile,
   }).sort({ createdAt: -1 });
   if (!verificationRequest) {
     return res.status(400).json({
@@ -64,7 +67,8 @@ export async function verifyOTP(req, res) {
       message: "Incorrect OTP",
     });
   }
-  const existingUser = await User.findOne({ phoneNumber });
+
+  const existingUser = await User.findOne({ mobile });
   if (existingUser) {
     const token = generateToken(existingUser);
     existingUser.isVerified = true;
@@ -76,13 +80,7 @@ export async function verifyOTP(req, res) {
       token,
     });
   }
-  const referralCode = referralCodeGenerator.alpha("uppercase", 12);
-  console.log({ referralCode });
-  const user = await User.create({
-    phoneNumber,
-    countryCode,
-    referralCode,
-  });
+  const user = await User.create({ mobile });
   const token = generateToken(user);
   res.status(200).json({
     status: "success",

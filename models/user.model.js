@@ -3,17 +3,36 @@ import referralCodeGenerator from "referral-code-generator";
 
 const userSchema = new mongoose.Schema(
   {
-    name: String,
+    fullname: String,
     email: String,
-    phoneNumber: {
+    mobile: {
       type: String,
       unique: true,
       required: true,
     },
+    username: {
+      type: String,
+    },
     countryCode: {
       type: String,
-      required: true,
+      default: "+91",
     },
+    DOB: Date,
+    gender: {
+      type: String,
+      enum: ["MALE", "FEMALE", "OTHERS"],
+    },
+    experience: {
+      type: String,
+      enum: ["BEGINNER", "INTERMEDIATE", "EXPERT"],
+    },
+    haveDemat: {
+      type: String,
+      enum: ["YES", "NO", "I WANT"],
+    },
+    country: String,
+    city: String,
+    profilePic: String,
     usertype: {
       type: String,
       enum: ["USER", "ADMIN"],
@@ -23,13 +42,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    referralCode: {
+    myReferralCode: {
       type: String,
+      default: referralCodeGenerator.alpha("uppercase", 12),
       minLength: 12,
       maxLength: 12,
       unique: true,
     },
-    referredBy: { type: String, minLength: 12, maxLength: 12 },
+    referralCode: { type: String, minLength: 12, maxLength: 12 },
   },
   { timestamps: true }
 );

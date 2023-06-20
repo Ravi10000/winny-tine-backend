@@ -5,6 +5,7 @@ import * as url from "url";
 export const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
 export const uploadPath = path.join(path.dirname(__dirname), "uploads");
 
+console.log({ __dirname, uploadPath });
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadPath);

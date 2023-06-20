@@ -2,11 +2,7 @@ import mongoose from "mongoose";
 
 const verificationRequestSchema = new mongoose.Schema(
   {
-    phoneNumber: {
-      type: String,
-      required: true,
-    },
-    countryCode: {
+    mobile: {
       type: String,
       required: true,
     },
