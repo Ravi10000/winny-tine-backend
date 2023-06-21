@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import supportRequestRoutes from "./routes/support-request.route.js";
 import ratingRoutes from "./routes/rating.route.js";
+import storyRoutes from "./routes/story.route.js";
 
 const app = express();
 
@@ -23,18 +24,13 @@ mongoose.connection.on("connected", (err, res) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(errorHandler);
 app.use(express.static("uploads"));
-
-function errorHandler(error, req, res, next) {
-  console.log("failSafeHandler", error);
-  res.status(500).json({ status: "error", message: error.message });
-}
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/support", supportRequestRoutes);
 app.use("/api/rating", ratingRoutes);
+app.use("/api/story", storyRoutes);
 
 const PORT = process.env.PORT || 5000;
 

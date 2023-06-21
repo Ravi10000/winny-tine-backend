@@ -15,6 +15,10 @@ const storySchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
