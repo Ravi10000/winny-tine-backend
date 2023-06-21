@@ -3,7 +3,7 @@ import {
   addStory,
   getStories,
   updateStory,
-} from "../controllers/story.controllers.js";
+} from "../controllers/story.controller.js";
 import upload from "../middlewares/upload.middleware.js";
 import { fetchUser, isValidUser } from "../middlewares/auth.middleware.js";
 

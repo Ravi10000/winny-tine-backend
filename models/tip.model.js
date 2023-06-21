@@ -21,11 +21,22 @@ const tipSchema = new mongoose.Schema(
       type: String,
       enum: ["BUY", "SELL"],
     },
+    expiryDate: {
+      type: Date,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true }
 );
+
+const Tip = mongoose.model("Tip", tipSchema);
+
+export default Tip;
