@@ -8,6 +8,7 @@ dotenv.config();
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import supportRequestRoutes from "./routes/support-request.route.js";
+import ratingRoutes from "./routes/rating.route.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ function errorHandler(error, req, res, next) {
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/support", supportRequestRoutes);
+app.use("/api/rating", ratingRoutes);
 
 const PORT = process.env.PORT || 5000;
 

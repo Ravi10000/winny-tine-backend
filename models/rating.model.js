@@ -7,7 +7,7 @@ const ratingSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    start: {
+    star: {
       type: String,
       enum: ["Terrible", "Bad", "Okay", "Good", "Amazing"],
     },
