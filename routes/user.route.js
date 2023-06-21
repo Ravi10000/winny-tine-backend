@@ -1,4 +1,6 @@
 import express from "express";
+import { body } from "express-validator";
+
 import {
   fetchUser,
   isAdmin,
@@ -23,7 +25,11 @@ router.put(
 );
 
 router.get("/profile", fetchUser, isValidUser, sendProfile);
-router.post("/check-username", checkUsernameAvailablility);
+router.post(
+  "/check-username",
+  [body("username", "Username Required").notEmpty()],
+  checkUsernameAvailablility
+);
 router.get("/", fetchUser, isValidUser, isAdmin, getAllUsers);
 
 export default router;

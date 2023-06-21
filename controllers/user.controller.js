@@ -1,3 +1,5 @@
+import validate from "../utils/validate.js";
+
 import User from "../models/user.model.js";
 
 export async function updateUserDetails(req, res) {
@@ -106,13 +108,15 @@ export async function getAllUsers(req, res) {
 }
 
 export async function checkUsernameAvailablility(req, res) {
-  const { username } = req.body;
-  if (!username) {
+  const errors = validate(req);
+  if (errors)
     return res.status(400).json({
       status: "error",
-      message: "Username is required",
+      message: "Validation Error",
+      errors,
     });
-  }
+
+  const { username } = req.body;
   const usernameExists = await User.findOne({
     username: username.toLowerCase(),
   });
