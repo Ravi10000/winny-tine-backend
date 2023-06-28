@@ -2,28 +2,43 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 
 export const fetchUser = async (req, res, next) => {
-  console.log("fetching user");
-  console.log("body on fetch user ", req.body);
-  console.log("params on fetch user ", req.params);
-  console.log("query on fetch user ", req.query);
-  console.log("files on fetch user ", req?.file);
-  console.log("headers on fetch user ", req.headers);
+  try {
+    console.log("fetching user");
+    console.log("body on fetch user ", req.body);
+    console.log("params on fetch user ", req.params);
+    console.log("query on fetch user ", req.query);
+    console.log("files on fetch user ", req?.file);
+    console.log("headers on fetch user ", req.headers);
 
-  if (req.headers.authorization) {
-    const token = req.headers.authorization.split(" ")[1];
-    console.log({ token });
-    if (token == "null" || !token) {
-      req.user = null;
-      return next();
+    if (req.headers.authorization) {
+      const token = req.headers.authorization.split(" ")[1];
+      console.log({ token });
+      if (token == "null" || !token) {
+        req.user = null;
+        return next();
+      }
+      const jwtExpiry = jwt.decode(token).exp;
+      const now = new Date().valueOf() / 1000;
+
+      if (jwtExpiry < now) {
+        req.user = null;
+        return next();
+      }
+      const user = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = user;
+      console.log("user fetched successfully");
+      console.log({ user });
+    } else {
+      console.log("no user found");
     }
-    const user = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = user;
-    console.log("user fetched successfully");
-    console.log({ user });
-  } else {
-    console.log("no user found");
+    next();
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({
+      status: "error",
+      message: err.message,
+    });
   }
-  next();
 };
 
 export const isAdmin = async (req, res, next) => {

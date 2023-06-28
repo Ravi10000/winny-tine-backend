@@ -14,7 +14,7 @@ export async function generateOTP(req, res) {
     });
   }
 
-  const otp = await customOtpGen({ length: 6, chars: "0123456789" });
+  const otp = await customOtpGen({ length: 4, chars: "0123456789" });
   console.log({ otp });
 
   const otpHash = await bcrypt.hash(otp, 10);

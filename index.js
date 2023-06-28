@@ -36,7 +36,7 @@ app.use("/api/tip", tipRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
+app.get("/api", (req, res) => {
   res.json({
     message: "Welcome to winny tine api.",
     apiUrl: `http://localhost:${PORT}/api`,
