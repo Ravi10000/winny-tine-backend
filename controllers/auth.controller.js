@@ -3,6 +3,8 @@ import VerificationRequest from "../models/verification-request.model.js";
 import { customOtpGen } from "otp-gen-agent";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import ReferralCodeGenerator from "referral-code-generator";
+import uniqid from "uniqid";
 
 export async function generateOTP(req, res) {
   const { mobile } = req.body;
@@ -80,7 +82,11 @@ export async function verifyOTP(req, res) {
       token,
     });
   }
-  const user = await User.create({ mobile });
+  const user = await User.create({
+    mobile,
+    myReferralCode: uniqid(),
+    // ReferralCodeGenerator.alpha("uppercase", 8) + mobile.toString().slice(-4),
+  });
   const token = generateToken(user);
   res.status(200).json({
     status: "success",
