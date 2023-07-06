@@ -10,26 +10,22 @@ export const fetchUser = async (req, res, next) => {
     console.log("files on fetch user ", req?.file);
     console.log("headers on fetch user ", req.headers);
 
-    if (req.headers.authorization) {
+    req.user = null;
+    if (req?.headers?.authorization) {
       const token = req.headers.authorization.split(" ")[1];
       console.log({ token });
       if (token == "null" || !token) {
-        req.user = null;
         return next();
       }
       const jwtExpiry = jwt.decode(token).exp;
-      const now = new Date().valueOf() / 1000;
+      const now = Date.now() / 1000;
 
       if (jwtExpiry < now) {
-        req.user = null;
         return next();
       }
-      const user = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = user;
+
+      req.user = jwt.verify(token, process.env.JWT_SECRET);
       console.log("user fetched successfully");
-      console.log({ user });
-    } else {
-      console.log("no user found");
     }
     next();
   } catch (err) {

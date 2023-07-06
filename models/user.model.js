@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import referralCodeGenerator from "referral-code-generator";
 
 const userSchema = new mongoose.Schema(
   {

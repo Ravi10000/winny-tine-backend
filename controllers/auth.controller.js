@@ -3,7 +3,7 @@ import VerificationRequest from "../models/verification-request.model.js";
 import { customOtpGen } from "otp-gen-agent";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import ReferralCodeGenerator from "referral-code-generator";
+// import ReferralCodeGenerator from "referral-code-generator";
 import uniqid from "uniqid";
 
 export async function generateOTP(req, res) {
