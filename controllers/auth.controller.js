@@ -11,7 +11,7 @@ export async function generateOTP(req, res) {
 
   if (!mobile) {
     return res.status(400).json({
-      status: "error",
+      success: true,
       message: "mobile required",
     });
   }
@@ -26,8 +26,9 @@ export async function generateOTP(req, res) {
   });
 
   res.status(200).json({
-    status: "success",
+    success: true,
     message: "OTP Generated Successfully",
+    otp,
   });
 }
 
@@ -36,7 +37,7 @@ export async function verifyOTP(req, res) {
 
   if (!mobile || !otp) {
     return res.status(400).json({
-      status: "error",
+      success: false,
       message: "mobile and otp are required",
     });
   }
@@ -46,7 +47,7 @@ export async function verifyOTP(req, res) {
   }).sort({ createdAt: -1 });
   if (!verificationRequest) {
     return res.status(400).json({
-      status: "error",
+      success: false,
       message: "OTP Not Found",
     });
   }
@@ -57,7 +58,7 @@ export async function verifyOTP(req, res) {
 
   if (isOtpExpired) {
     return res.status(400).json({
-      status: "error",
+      success: false,
       message: "OTP Expired",
     });
   }
@@ -65,7 +66,7 @@ export async function verifyOTP(req, res) {
   const isMatch = await bcrypt.compare(otp, verificationRequest.otpHash);
   if (!isMatch) {
     return res.status(400).json({
-      status: "error",
+      success: false,
       message: "Incorrect OTP",
     });
   }
@@ -73,10 +74,8 @@ export async function verifyOTP(req, res) {
   const existingUser = await User.findOne({ mobile });
   if (existingUser) {
     const token = generateToken(existingUser);
-    existingUser.isVerified = true;
-    await existingUser.save();
     return res.status(200).json({
-      status: "success",
+      success: true,
       message: "OTP Verified Successfully",
       user: existingUser,
       token,
@@ -85,11 +84,12 @@ export async function verifyOTP(req, res) {
   const user = await User.create({
     mobile,
     myReferralCode: uniqid(),
+    isVerified: true,
     // ReferralCodeGenerator.alpha("uppercase", 8) + mobile.toString().slice(-4),
   });
   const token = generateToken(user);
   res.status(200).json({
-    status: "success",
+    success: true,
     message: "OTP Verified Successfully",
     user,
     token,
