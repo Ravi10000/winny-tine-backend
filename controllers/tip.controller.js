@@ -1,60 +1,21 @@
 import Tip from "../models/tip.model.js";
 
-export async function addTip(req, res) {
+export async function addTip(req, res, next) {
   const {
     stockName,
     entryPrice,
-    target,
-    stopLoss,
+    targetPrice,
+    stopLossPrice,
     quantity,
     remark,
     expiryDate,
   } = req.body;
-  if (
-    !stockName ||
-    !entryPrice ||
-    !target ||
-    !stopLoss ||
-    !quantity ||
-    !remark ||
-    !expiryDate
-  ) {
-    return res.status(400).json({
-      status: "error",
-      message:
-        "required fields: stockName, entryPrice, target, stopLoss, quantity, remark, expiryDate",
-    });
-  }
-  if (!Date.parse(expiryDate)) {
-    return res.status(400).json({
-      status: "error",
-      message: "expiryDate should be a valid date, accepted format mm-dd-yyyy",
-    });
-  }
-  if (!["BUY", "SELL"].includes(remark)) {
-    return res.status(400).json({
-      status: "error",
-      message: "remark should be either BUY or SELL",
-    });
-  }
-  if (typeof entryPrice !== "number") {
-    return res.status(400).json({
-      status: "error",
-      message: "entryPrice should be a number",
-    });
-  }
-  if (typeof quantity !== "number") {
-    return res.status(400).json({
-      status: "error",
-      message: "quantity should be a number",
-    });
-  }
   try {
     const tip = await Tip.create({
       stockName,
       entryPrice,
-      target,
-      stopLoss,
+      targetPrice,
+      stopLossPrice,
       quantity,
       remark,
       expiryDate,
@@ -66,8 +27,7 @@ export async function addTip(req, res) {
       tip,
     });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ status: "error", message: err.message });
+    next(err);
   }
 }
 
@@ -91,9 +51,8 @@ export async function getTips(req, res) {
       }
     }
     return res.status(200).json({
-      status: "success",
-      message: "Tips Sent Successfully",
-      tips,
+      success: true,
+      data: tips,
     });
   } catch (err) {
     console.log(err.message);

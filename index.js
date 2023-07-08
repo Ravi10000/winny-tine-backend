@@ -32,7 +32,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/support", supportRequestRoutes);
 app.use("/api/rating", ratingRoutes);
 app.use("/api/story", storyRoutes);
-app.use("/api/tip", tipRoutes);
+app.use("/api/tips", tipRoutes);
 
 const PORT = process.env.PORT || 5000;
 
