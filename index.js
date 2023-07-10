@@ -11,6 +11,7 @@ import supportRequestRoutes from "./routes/support-request.route.js";
 import ratingRoutes from "./routes/rating.route.js";
 import storyRoutes from "./routes/story.route.js";
 import tipRoutes from "./routes/tip.route.js";
+import subscriptionRoutes from "./routes/subscription.route.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/support", supportRequestRoutes);
 app.use("/api/rating", ratingRoutes);
 app.use("/api/story", storyRoutes);
 app.use("/api/tips", tipRoutes);
+app.use("/api/subscriptions", subscriptionRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -11,7 +11,7 @@ export async function addTip(req, res, next) {
     expiryDate,
   } = req.body;
   try {
-    const tip = await Tip.create({
+    await Tip.create({
       stockName,
       entryPrice,
       targetPrice,
@@ -22,16 +22,15 @@ export async function addTip(req, res, next) {
       createdBy: req.user._id,
     });
     return res.status(201).json({
-      status: "success",
+      success: true,
       message: "Tip Created Successfully",
-      tip,
     });
   } catch (err) {
     next(err);
   }
 }
 
-export async function getTips(req, res) {
+export async function getTips(req, res, next) {
   const { status } = req.query;
   if (status) {
     if (!["EXPIRED", "ACTIVE"].includes(status)) {
@@ -55,83 +54,38 @@ export async function getTips(req, res) {
       data: tips,
     });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ status: "error", message: err.message });
+    next(err);
   }
 }
 
-export async function updateTip(req, res) {
-  const {
-    stockName,
-    entryPrice,
-    target,
-    stopLoss,
-    quantity,
-    remark,
-    expiryDate,
-    tipId,
-  } = req.body;
+export async function updateTip(req, res, next) {
+  const tipId = req.params.tipId;
 
-  if (!tipId) {
-    return res.status(400).json({
-      status: "error",
-      message: "required fields: tipId",
-    });
-  }
   const tipData = {
+    ...req.body,
     updatedBy: req.user._id,
   };
 
-  if (expiryDate) {
-    if (!Date.parse(expiryDate)) {
-      return res.status(400).json({
-        status: "error",
-        message:
-          "expiryDate should be a valid date, accepted format mm-dd-yyyy",
-      });
-    }
-    tipData.expiryDate = expiryDate;
-  }
-  if (remark) {
-    if (!["BUY", "SELL"].includes(remark)) {
-      return res.status(400).json({
-        status: "error",
-        message: "remark should be either BUY or SELL",
-      });
-    }
-    tipData.remark = remark;
-  }
-  if (entryPrice) {
-    if (typeof entryPrice !== "number") {
-      return res.status(400).json({
-        status: "error",
-        message: "entryPrice should be a number",
-      });
-    }
-    tipData.entryPrice = entryPrice;
-  }
-  if (quantity) {
-    if (typeof quantity !== "number") {
-      return res.status(400).json({
-        status: "error",
-        message: "quantity should be a number",
-      });
-    }
-    tipData.quantity = quantity;
-  }
-
-  if (target) tipData.target = target;
-  if (stopLoss) tipData.stopLoss = stopLoss;
-  if (stockName) tipData.stockName = stockName;
   try {
-    const tip = await Tip.findByIdAndUpdate(tipId, tipData, { new: true });
-    return res.status(201).json({
-      status: "success",
+    await Tip.findByIdAndUpdate(tipId, tipData, { new: true });
+    return res.status(200).json({
+      success: true,
       message: "Tip Updated Successfully",
-      tip,
     });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ status: "error", message: err.message });
+    next(err);
+  }
+}
+
+export async function deleteTip(req, res, next) {
+  try {
+    const tipId = req.params.tipId;
+    await Tip.findByIdAndDelete(tipId);
+    return res.status(200).json({
+      success: true,
+      message: "Tip Deleted Successfully",
+    });
+  } catch (error) {
+    next(err);
   }
 }
