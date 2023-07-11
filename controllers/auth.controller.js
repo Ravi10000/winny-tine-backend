@@ -17,8 +17,11 @@ export async function generateOTP(req, res) {
     });
   }
 
-  const otp = await customOtpGen({ length: 4, chars: "0123456789" });
-  console.log({ otp });
+  //todo
+  // const otp = await customOtpGen({ length: 4, chars: "0123456789" });
+  // console.log({ otp });
+
+  const otp = "1111";
 
   const otpHash = await bcrypt.hash(otp, 10);
   await VerificationRequest.create({
