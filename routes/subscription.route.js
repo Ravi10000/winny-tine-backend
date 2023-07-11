@@ -8,11 +8,27 @@ import {
 import {
   addSubscription,
   getAllSubscription,
+  updateSubscription,
+  deleteSubscription,
 } from "../controllers/subscription.controller.js";
 
 const router = express.Router();
 
 router.post("/", fetchUser, isValidUser, isAdmin, addSubscription);
+router.put(
+  "/:subscriptionId",
+  fetchUser,
+  isValidUser,
+  isAdmin,
+  updateSubscription
+);
+router.delete(
+  "/:subscriptionId",
+  fetchUser,
+  isValidUser,
+  isAdmin,
+  deleteSubscription
+);
 
 router.get("/", getAllSubscription);
 

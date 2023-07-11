@@ -3,17 +3,9 @@ import User from "../models/user.model.js";
 
 export const fetchUser = async (req, res, next) => {
   try {
-    console.log("fetching user");
-    console.log("body on fetch user ", req.body);
-    console.log("params on fetch user ", req.params);
-    console.log("query on fetch user ", req.query);
-    console.log("files on fetch user ", req?.file);
-    console.log("headers on fetch user ", req.headers);
-
     req.user = null;
     if (req?.headers?.authorization) {
       const token = req.headers.authorization.split(" ")[1];
-      console.log({ token });
       if (token == "null" || !token) {
         return next();
       }
@@ -25,11 +17,9 @@ export const fetchUser = async (req, res, next) => {
       }
 
       req.user = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("user fetched successfully");
     }
     next();
   } catch (err) {
-    console.log(err.message);
     res.status(400).json({
       status: "error",
       message: err.message,

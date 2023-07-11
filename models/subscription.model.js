@@ -16,7 +16,6 @@ const SubscriptionSchema = new mongoose.Schema(
     },
     features: {
       type: [String],
-      required: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

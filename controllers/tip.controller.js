@@ -86,6 +86,6 @@ export async function deleteTip(req, res, next) {
       message: "Tip Deleted Successfully",
     });
   } catch (error) {
-    next(err);
+    next(error);
   }
 }

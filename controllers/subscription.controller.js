@@ -30,3 +30,37 @@ export const getAllSubscription = async (req, res, next) => {
     next(error);
   }
 };
+
+export async function updateSubscription(req, res, next) {
+  const subscriptionId = req.params.subscriptionId;
+
+  const subscriptionData = {
+    ...req.body,
+    updatedBy: req.user._id,
+  };
+
+  try {
+    await Subscription.findByIdAndUpdate(subscriptionId, subscriptionData, {
+      new: true,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Subscription Updated Successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteSubscription(req, res, next) {
+  try {
+    const subscriptionId = req.params.subscriptionId;
+    await Subscription.findByIdAndDelete(subscriptionId);
+    return res.status(200).json({
+      success: true,
+      message: "Subscription Updated Successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
