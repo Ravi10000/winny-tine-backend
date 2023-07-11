@@ -11,7 +11,7 @@ export const addSubscription = async (req, res, next) => {
       createdBy: req.user._id,
     });
     return res.status(201).json({
-      success: true,
+      status: "success",
       message: "Subscription Created Successfully",
     });
   } catch (error) {
@@ -23,7 +23,7 @@ export const getAllSubscription = async (req, res, next) => {
   try {
     const data = await Subscription.find({});
     return res.status(200).json({
-      success: true,
+      status: "success",
       data,
     });
   } catch (error) {
@@ -44,7 +44,7 @@ export async function updateSubscription(req, res, next) {
       new: true,
     });
     return res.status(200).json({
-      success: true,
+      status: "success",
       message: "Subscription Updated Successfully",
     });
   } catch (err) {
@@ -57,7 +57,7 @@ export async function deleteSubscription(req, res, next) {
     const subscriptionId = req.params.subscriptionId;
     await Subscription.findByIdAndDelete(subscriptionId);
     return res.status(200).json({
-      success: true,
+      status: "success",
       message: "Subscription Updated Successfully",
     });
   } catch (error) {

@@ -11,7 +11,7 @@ export async function generateOTP(req, res) {
 
   if (!mobile) {
     return res.status(400).json({
-      success: true,
+      status: "fail",
       message: "mobile required",
     });
   }
@@ -26,7 +26,7 @@ export async function generateOTP(req, res) {
   });
 
   res.status(200).json({
-    success: true,
+    status: "success",
     message: "OTP Generated Successfully",
   });
 }
@@ -36,7 +36,7 @@ export async function verifyOTP(req, res) {
 
   if (!mobile || !otp) {
     return res.status(400).json({
-      success: false,
+      status: "fail",
       message: "mobile and otp are required",
     });
   }
@@ -46,7 +46,7 @@ export async function verifyOTP(req, res) {
   }).sort({ createdAt: -1 });
   if (!verificationRequest) {
     return res.status(400).json({
-      success: false,
+      status: "fail",
       message: "OTP Not Found",
     });
   }
@@ -57,7 +57,7 @@ export async function verifyOTP(req, res) {
 
   if (isOtpExpired) {
     return res.status(400).json({
-      success: false,
+      status: "fail",
       message: "OTP Expired",
     });
   }
@@ -65,7 +65,7 @@ export async function verifyOTP(req, res) {
   const isMatch = await bcrypt.compare(otp, verificationRequest.otpHash);
   if (!isMatch) {
     return res.status(400).json({
-      success: false,
+      status: "fail",
       message: "Incorrect OTP",
     });
   }
@@ -74,7 +74,7 @@ export async function verifyOTP(req, res) {
   if (existingUser) {
     const token = generateToken(existingUser);
     return res.status(200).json({
-      success: true,
+      status: "success",
       message: "OTP Verified Successfully",
       user: existingUser,
       token,
@@ -88,7 +88,7 @@ export async function verifyOTP(req, res) {
   });
   const token = generateToken(user);
   res.status(200).json({
-    success: true,
+    status: "success",
     message: "OTP Verified Successfully",
     user,
     token,
