@@ -22,6 +22,7 @@ export async function addTip(req, res, next) {
       createdBy: req.user._id,
     });
     return res.status(201).json({
+      success: true,
       status: "success",
       message: "Tip Created Successfully",
     });
@@ -35,6 +36,7 @@ export async function getTips(req, res, next) {
   if (status) {
     if (!["EXPIRED", "ACTIVE"].includes(status)) {
       return res.status(400).json({
+        success : false,
         status: "error",
         message: "status should be either EXPIRED or ACTIVE",
       });
@@ -50,6 +52,7 @@ export async function getTips(req, res, next) {
       }
     }
     return res.status(200).json({
+      success: true,
       status: "success",
       data: tips,
     });
@@ -69,6 +72,7 @@ export async function updateTip(req, res, next) {
   try {
     await Tip.findByIdAndUpdate(tipId, tipData, { new: true });
     return res.status(200).json({
+      success: true,
       status: "success",
       message: "Tip Updated Successfully",
     });
@@ -82,6 +86,7 @@ export async function deleteTip(req, res, next) {
     const tipId = req.params.tipId;
     await Tip.findByIdAndDelete(tipId);
     return res.status(200).json({
+      success: true,
       status: "success",
       message: "Tip Deleted Successfully",
     });

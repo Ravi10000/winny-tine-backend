@@ -11,6 +11,7 @@ export async function createSupportRequest(req, res) {
   });
 
   res.status(201).json({
+    success : true,
     status: "success",
     message: "Support Request Created",
     supportRequest,
@@ -20,6 +21,7 @@ export async function createSupportRequest(req, res) {
 export async function getAllSupportRequests(req, res) {
   const supportRequests = await SupportRequest.find({}).populate("user");
   res.status(200).json({
+    success : true,
     status: "success",
     message: "All Support Requests",
     supportRequests,
@@ -30,6 +32,7 @@ export async function getMySupportRequests(req, res) {
     user: req.user._id,
   });
   res.status(200).json({
+    success : true,
     status: "success",
     message: "My Support Requests",
     supportRequests,
@@ -56,6 +59,7 @@ export async function updateRequest(req, res) {
   await supportRequest.save();
 
   res.status(200).json({
+    success : true,
     status: "success",
     message: "Reply Added Successfully",
     supportRequest,

@@ -27,6 +27,8 @@ export async function add_n_updateRating(req, res) {
     existingRating.description = ratingData.description;
     await existingRating.save();
     return res.status(200).json({
+      
+      success:true,
       status: "success",
       message: "Rating Updated Successfully",
       rating: existingRating,
@@ -36,7 +38,9 @@ export async function add_n_updateRating(req, res) {
   const rating = await Rating.create(ratingData);
   return res
     .status(201)
-    .json({ status: "success", message: "Rating Added Successfully", rating });
+    .json({ 
+      success:true,
+      status: "success", message: "Rating Added Successfully", rating });
 }
 
 export async function getMyRating(req, res) {
@@ -46,10 +50,14 @@ export async function getMyRating(req, res) {
       .status(404)
       .json({ status: "error", message: "Rating not found" });
   }
-  return res.status(200).json({ status: "success", rating });
+  return res.status(200).json({ 
+    success:true,
+    status: "success", rating });
 }
 
 export async function getAllRatings(req, res) {
   const ratings = await Rating.find().populate("user", "fullname email mobile");
-  return res.status(200).json({ status: "success", ratings });
+  return res.status(200).json({ 
+    success:true,
+    status: "success", ratings });
 }

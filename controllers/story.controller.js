@@ -42,6 +42,7 @@ export async function addStory(req, res) {
 
     const story = await Story.create(storyData);
     return res.status(201).json({
+      success: true,
       status: "success",
       message: "Story Created Successfully",
       story,
@@ -99,6 +100,7 @@ export async function updateStory(req, res) {
     if (image) deleteFile(oldStory.image);
 
     return res.status(201).json({
+      success: true,
       status: "success",
       message: "Story Created Successfully",
       story,
@@ -123,5 +125,6 @@ export async function getStories(req, res) {
   const story = await Story.find(q);
   return res
     .status(200)
-    .json({ status: "success", message: "Stories Sent Successfully", story });
+    .json({ success: true,
+      status: "success", message: "Stories Sent Successfully", story });
 }
