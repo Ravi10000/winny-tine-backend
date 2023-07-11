@@ -10,6 +10,7 @@ import {
   getAllSubscription,
   updateSubscription,
   deleteSubscription,
+  addUserSubscription,getUserSubscription
 } from "../controllers/subscription.controller.js";
 
 const router = express.Router();
@@ -31,5 +32,9 @@ router.delete(
 );
 
 router.get("/", getAllSubscription);
+
+router.post("/user-subscription",fetchUser,isValidUser,addUserSubscription)
+
+router.get("/user-subscription",fetchUser,isValidUser,getUserSubscription)
 
 export default router;

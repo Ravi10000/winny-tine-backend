@@ -1,4 +1,5 @@
 import Subscription from "../models/subscription.model.js";
+import UserSubscription from "../models/user.subscription.model.js";
 
 export const addSubscription = async (req, res, next) => {
   try {
@@ -65,6 +66,48 @@ export async function deleteSubscription(req, res, next) {
       message: "Subscription Updated Successfully",
     });
   } catch (error) {
+    next(error);
+  }
+}
+
+export async function addUserSubscription(req,res,next){
+  try{
+
+    const { userid, subscriptionPlanId, transactionId, amount,successDetails,expiryDate} = req.body;
+    await UserSubscription.updateMany({ userid }, {status : 'INACTIVE'}, {
+      new: true,
+    });
+    const userSub = await UserSubscription.create({
+      userid,
+      subscriptionPlanId,
+      transactionId,
+      amount,successDetails,
+      status : "ACTIVE",
+      expiryDate
+    });
+    return res.status(201).json({
+      success: true,
+      status: "success",
+      message: "User Subscription Created Successfully",
+      userSub
+    });
+  }
+  catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserSubscription(req,res,next){
+  try{
+    const data = await UserSubscription.findOne({userid : req.user._id,status : "ACTIVE"});
+    return res.status(201).json({
+      success: true,
+      status: "success",
+      message: "User Subscription Got Successfully",
+      data
+    });
+  }
+  catch (error) {
     next(error);
   }
 }
