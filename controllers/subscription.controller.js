@@ -70,44 +70,69 @@ export async function deleteSubscription(req, res, next) {
   }
 }
 
-export async function addUserSubscription(req,res,next){
-  try{
-
-    const { userid, subscriptionPlanId, transactionId, amount,successDetails,expiryDate} = req.body;
-    await UserSubscription.updateMany({ userid }, {status : 'INACTIVE'}, {
-      new: true,
-    });
+export async function addUserSubscription(req, res, next) {
+  try {
+    const {
+      userid,
+      subscriptionPlanId,
+      transactionId,
+      amount,
+      successDetails,
+      expiryDate,
+    } = req.body;
+    await UserSubscription.updateMany(
+      { userid },
+      { status: "INACTIVE" },
+      {
+        new: true,
+      }
+    );
     const userSub = await UserSubscription.create({
       userid,
       subscriptionPlanId,
       transactionId,
-      amount,successDetails,
-      status : "ACTIVE",
-      expiryDate
+      amount,
+      successDetails,
+      status: "ACTIVE",
+      expiryDate,
     });
     return res.status(201).json({
       success: true,
       status: "success",
       message: "User Subscription Created Successfully",
-      userSub
+      userSub,
     });
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
   }
 }
 
-export async function getUserSubscription(req,res,next){
-  try{
-    const data = await UserSubscription.findOne({userid : req.user._id,status : "ACTIVE"});
+export async function getUserSubscription(req, res, next) {
+  try {
+    const data = await UserSubscription.findOne({
+      userid: req.user._id,
+      status: "ACTIVE",
+    });
     return res.status(201).json({
       success: true,
       status: "success",
       message: "User Subscription Got Successfully",
-      data
+      data,
     });
+  } catch (error) {
+    next(error);
   }
-  catch (error) {
+}
+
+export async function getAllUserSubscription(req, res, next) {
+  try {
+    const data = await UserSubscription.find({});
+    return res.status(201).json({
+      success: true,
+      status: "success",
+      data,
+    });
+  } catch (error) {
     next(error);
   }
 }
