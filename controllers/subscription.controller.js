@@ -63,7 +63,7 @@ export async function deleteSubscription(req, res, next) {
     return res.status(200).json({
       success: true,
       status: "success",
-      message: "Subscription Updated Successfully",
+      message: "Subscription Deleted Successfully",
     });
   } catch (error) {
     next(error);
@@ -126,7 +126,24 @@ export async function getUserSubscription(req, res, next) {
 
 export async function getAllUserSubscription(req, res, next) {
   try {
-    const data = await UserSubscription.find({});
+    const data = await UserSubscription.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "userid",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $lookup: {
+          from: "subscriptions",
+          localField: "subscriptionPlanId",
+          foreignField: "_id",
+          as: "subscriptionPlan",
+        },
+      },
+    ]).exec();
     return res.status(201).json({
       success: true,
       status: "success",
