@@ -21,5 +21,16 @@ const imageFileFilter = (req, file, cb) => {
   cb(null, true);
 };
 
+const excelFileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(xlsx|xls|csv)$/)) {
+    return cb(
+      new Error("You can upload only .xlsx, .xls and .csv files!"),
+      false
+    );
+  }
+  cb(null, true);
+};
+
 const upload = multer({ storage, fileFilter: imageFileFilter });
+export const uploadExcel = multer({ storage, fileFilter: excelFileFilter });
 export default upload;

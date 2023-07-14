@@ -1,11 +1,12 @@
 import Banner from "../models/banner.model.js";
+import { deleteFile } from "../utils/delete-file.js";
 
 export const addBanner = async (req, res, next) => {
   try {
     await Banner.create({
       ...req.body,
       addedBy: req.user._id,
-      image: req.file.originalname,
+      image: req.file.filename,
     });
     return res.status(201).json({
       success: true,
@@ -45,9 +46,16 @@ export const getBannerById = async (req, res, next) => {
 
 export const updateBanner = async (req, res, next) => {
   try {
+    const bannerId = req.params.bannerId;
+    const { filename } = req.file || {};
+
+    if (req.file) {
+      const { image } = await Banner.findById(bannerId);
+      if (filename) deleteFile(image);
+    }
     const updates = { ...req.body };
-    if (req.file) updates.image = req.file.originalname;
-    await Banner.findByIdAndUpdate(req.params.bannerId, {
+    if (filename) updates.image = filename;
+    await Banner.findByIdAndUpdate(bannerId, {
       ...updates,
       updatedBy: req.user._id,
     });
@@ -61,16 +69,14 @@ export const updateBanner = async (req, res, next) => {
   }
 };
 
-export async function deleteBanner(req, res, next) {
-  try {
-    const bannerId = req.params.bannerId;
-    await Banner.findByIdAndDelete(bannerId);
+export function deleteBanner(req, res, next) {
+  const bannerId = req.params.bannerId;
+  Banner.findByIdAndDelete(bannerId).then((data) => {
+    deleteFile(data.image);
     return res.status(200).json({
       success: true,
       status: "success",
       message: "Banner Deleted Successfully",
     });
-  } catch (error) {
-    next(error);
-  }
+  });
 }

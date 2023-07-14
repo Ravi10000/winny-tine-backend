@@ -13,6 +13,9 @@ import storyRoutes from "./routes/story.route.js";
 import tipRoutes from "./routes/tip.route.js";
 import subscriptionRoutes from "./routes/subscription.route.js";
 import bannerRoutes from "./routes/banner.route.js";
+import newsRoutes from "./routes/news.route.js";
+import watchlistRoutes from "./routes/watchlist.route.js";
+import stockRoutes from "./routes/stock.route.js";
 
 const app = express();
 
@@ -37,6 +40,9 @@ app.use("/api/story", storyRoutes);
 app.use("/api/tips", tipRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/banners", bannerRoutes);
+app.use("/api/news", newsRoutes);
+app.use("/api/watchlist", watchlistRoutes);
+app.use("/api/stocks", stockRoutes);
 
 const PORT = process.env.PORT || 5000;
 
