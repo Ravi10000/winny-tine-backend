@@ -40,6 +40,18 @@ const tipSchema = new mongoose.Schema(
           `${props.value} is not a valid format!, accpeted format is DD/MM/YYYY`,
       },
     },
+    expiryTime: {
+      type: String,
+      required: true,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return /\d{2}:\d{2} (AM|PM)/.test(v);
+        },
+        message: (props) =>
+          `${props.value} is not a valid format!, accpeted format is hh:mm (AM|PM)`,
+      },
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

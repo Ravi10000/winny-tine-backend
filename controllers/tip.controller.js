@@ -9,6 +9,7 @@ export async function addTip(req, res, next) {
     quantity,
     remark,
     expiryDate,
+    expiryTime,
   } = req.body;
   try {
     await Tip.create({
@@ -19,6 +20,7 @@ export async function addTip(req, res, next) {
       quantity,
       remark,
       expiryDate,
+      expiryTime,
       createdBy: req.user._id,
     });
     return res.status(201).json({

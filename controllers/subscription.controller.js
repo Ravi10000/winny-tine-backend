@@ -143,6 +143,16 @@ export async function getAllUserSubscription(req, res, next) {
           as: "subscriptionPlan",
         },
       },
+      {
+        $set: {
+          user: { $arrayElemAt: ["$user", 0] },
+        },
+      },
+      {
+        $set: {
+          subscriptionPlan: { $arrayElemAt: ["$subscriptionPlan", 0] },
+        },
+      },
     ]).exec();
     return res.status(201).json({
       success: true,
