@@ -4,9 +4,11 @@ const EventSchema = new mongoose.Schema({
   userid: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
   startDateTime: {
-    type: String,
+    type: Date,
+    required: true,
   },
   eventType: {
     type: String,
