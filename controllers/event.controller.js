@@ -26,26 +26,46 @@ export function activeUser(req, res, next) {
     .catch(next);
 }
 
-export async function getAllActiveUser(req, res, next) {
+export async function getActiveUser(req, res, next) {
   try {
-    const data = await Event.find({});
-    return res.status(200).json({
-      success: true,
-      status: "success",
-      data,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
-export async function getDailyActiveuser(req, res, next) {
-  try {
-    const data = await Event.find({
-      startDateTime: {
-        $gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      },
-    });
+    const { groupby } = req.query;
+    let data;
+    if (groupby) {
+      switch (groupby.toLowerCase().trim()) {
+        case "daily":
+          data = Event.find({
+            startDateTime: {
+              $gte: new Date(Date.now() - 24 * 60 * 60 * 1000),
+            },
+          });
+          break;
+        case "weekly":
+          let weeklyDate = new Date();
+          weeklyDate.setDate(weeklyDate.getDate() - 7);
+          data = Event.find({
+            startDateTime: {
+              $gte: weeklyDate,
+            },
+          });
+          break;
+        case "monthly":
+          let monthlyDate = new Date();
+          monthlyDate.setFullYear(monthlyDate.getFullYear() - 1);
+          data = Event.find({
+            startDateTime: {
+              $gte: monthlyDate,
+            },
+          });
+          break;
+        default:
+          throw new Error(
+            `${groupby} query is not valid, try daily, weekly and monthly`
+          );
+      }
+      data = await data;
+    } else {
+      data = await Event.find({});
+    }
     return res.status(200).json({
       success: true,
       status: "success",
