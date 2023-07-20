@@ -107,7 +107,7 @@ export async function addUserSubscription(req, res, next) {
   }
 }
 
-export async function getUserSubscription(req, res, next) {
+export async function getUserSubscriptionByUserId(req, res, next) {
   try {
     const data = await UserSubscription.findOne({
       userid: req.user._id,
@@ -124,9 +124,10 @@ export async function getUserSubscription(req, res, next) {
   }
 }
 
-export async function getAllUserSubscription(req, res, next) {
+export async function getUserSubscription(req, res, next) {
   try {
-    const data = await UserSubscription.aggregate([
+    const { status } = req.query;
+    const pipeline = [
       {
         $lookup: {
           from: "users",
@@ -153,7 +154,20 @@ export async function getAllUserSubscription(req, res, next) {
           subscriptionPlan: { $arrayElemAt: ["$subscriptionPlan", 0] },
         },
       },
-    ]).exec();
+    ];
+    if (status) {
+      const val = status.toUpperCase();
+      if (["ACTIVE", "INACTIVE"].includes(val)) {
+        pipeline.push({ $match: { status: val } });
+      } else {
+        const err = new Error(
+          `${status} is not valid query, try ACTIVE, INACTIVE or active`
+        );
+        err.status = 404;
+        throw err;
+      }
+    }
+    const data = await UserSubscription.aggregate(pipeline).exec();
     return res.status(201).json({
       success: true,
       status: "success",

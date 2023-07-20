@@ -11,8 +11,8 @@ import {
   updateSubscription,
   deleteSubscription,
   addUserSubscription,
+  getUserSubscriptionByUserId,
   getUserSubscription,
-  getAllUserSubscription,
 } from "../controllers/subscription.controller.js";
 
 const router = express.Router();
@@ -37,12 +37,12 @@ router.get("/", getAllSubscription);
 
 router.post("/user-subscription", fetchUser, isValidUser, addUserSubscription);
 
-router.get("/user-subscription", fetchUser, isValidUser, getUserSubscription);
 router.get(
-  "/users-subscription",
+  "/user-subscription",
   fetchUser,
   isValidUser,
-  getAllUserSubscription
+  getUserSubscriptionByUserId
 );
+router.get("/users-subscription", fetchUser, isValidUser, getUserSubscription);
 
 export default router;

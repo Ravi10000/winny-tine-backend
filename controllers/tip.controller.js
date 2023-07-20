@@ -1,4 +1,9 @@
 import Tip from "../models/tip.model.js";
+import { createRequire } from "module";
+const customRequire = createRequire(import.meta.url);
+const dayjs = customRequire("dayjs");
+var customParseFormat = customRequire("dayjs/plugin/customParseFormat");
+dayjs.extend(customParseFormat);
 
 export async function addTip(req, res, next) {
   const {
@@ -66,9 +71,21 @@ export async function getTips(req, res, next) {
     tips = await tips;
     if (status) {
       if (status === "active") {
-        tips = tips.filter((tip) => tip.expiryDate.valueOf() > Date.now());
+        tips = tips.filter(
+          (tip) =>
+            dayjs(
+              `${tip.expiryDate.trim()} ${tip.expiryTime.trim()}`,
+              "DD/MM/YYYY hh:mm A"
+            ).valueOf() > Date.now()
+        );
       } else {
-        tips = tips.filter((tip) => tip.expiryDate.valueOf() < Date.now());
+        tips = tips.filter(
+          (tip) =>
+            dayjs(
+              `${tip.expiryDate.trim()} ${tip.expiryTime.trim()}`,
+              "DD/MM/YYYY hh:mm A"
+            ) < Date.now()
+        );
       }
     }
     return res.status(200).json({
