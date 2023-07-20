@@ -12,6 +12,11 @@ import ratingRoutes from "./routes/rating.route.js";
 import storyRoutes from "./routes/story.route.js";
 import tipRoutes from "./routes/tip.route.js";
 import subscriptionRoutes from "./routes/subscription.route.js";
+import bannerRoutes from "./routes/banner.route.js";
+import newsRoutes from "./routes/news.route.js";
+import watchlistRoutes from "./routes/watchlist.route.js";
+import stockRoutes from "./routes/stock.route.js";
+import eventRoutes from "./routes/event.route.js";
 
 const app = express();
 
@@ -26,7 +31,7 @@ mongoose.connection.on("connected", (err, res) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -35,6 +40,11 @@ app.use("/api/rating", ratingRoutes);
 app.use("/api/story", storyRoutes);
 app.use("/api/tips", tipRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
+app.use("/api/banners", bannerRoutes);
+app.use("/api/news", newsRoutes);
+app.use("/api/watchlist", watchlistRoutes);
+app.use("/api/stocks", stockRoutes);
+app.use("/api/events", eventRoutes);
 
 const PORT = process.env.PORT || 5000;
 

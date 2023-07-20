@@ -4,6 +4,7 @@ const userSubscription = new mongoose.Schema(
   {
     userid: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
     subscriptionPlanId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,130 +1,95 @@
 import Story from "../models/story.model.js";
 import { deleteFile } from "../utils/delete-file.js";
 
-export async function addStory(req, res) {
+export async function addStory(req, res, next) {
   try {
-    const { text, status } = req.body;
-    const icon = req?.files?.icon[0]?.filename;
-    const image = req?.files?.image[0]?.filename;
+    const image = req.files["image"][0].filename;
+    const profileImage = req.files["profileImage"][0].filename;
 
-    if (!icon) {
-      if (image) deleteFile(image);
-      return res.status(400).json({ message: "icon is required" });
-    }
-
-    const storyData = {
-      icon,
-      createdBy: req.user._id,
-    };
-
-    if (status) {
-      if (!["ACTIVE", "INACTIVE"].includes(status)) {
-        if (icon) deleteFile(icon);
-        if (image) deleteFile(image);
-        return res
-          .status(400)
-          .json({ message: "Invalid status, can only be ACTIVE OR INACTIVE" });
-      }
-      storyData.status = status;
-    }
-
-    if (!text && !image) {
-      if (icon) deleteFile(icon);
-      return res.status(400).json({ message: "text or image required" });
-    }
-
-    if (text) {
-      storyData.text = text;
-    }
-    if (image) {
-      storyData.image = image;
-    }
-
-    const story = await Story.create(storyData);
+    await Story.create({
+      ...req.body,
+      image,
+      profileImage,
+      addedBy: req.user._id,
+    });
     return res.status(201).json({
       success: true,
       status: "success",
       message: "Story Created Successfully",
-      story,
     });
   } catch (err) {
-    console.log(err.message);
-    res.status(500).json({ status: "error", message: err.message });
+    next(err);
   }
 }
-export async function updateStory(req, res) {
+export async function updateStory(req, res, next) {
   try {
-    const { text, status, storyId } = req.body;
-    const icon =
-      req?.files?.icon?.length > 0 && req?.files?.icon?.[0]?.filename;
-    const image =
-      req?.files?.image?.length > 0 && req?.files?.image?.[0]?.filename;
+    const storyId = req.params.storyId;
+    const { image, profileImage } = req.files || {};
 
-    if (!storyId) {
-      return res.status(400).json({ message: "storyId is required" });
-    }
-    const oldStory = await Story.findById(storyId);
-    if (!oldStory) {
-      if (icon) deleteFile(icon);
-      if (image) deleteFile(image);
-      return res.status(400).json({ message: "storyId is invalid" });
+    if (req.files) {
+      const { image: oldImage, profileImage: oldProfileImage } =
+        await Story.findById(storyId);
+      if (image) deleteFile(oldImage);
+      if (profileImage) deleteFile(oldProfileImage);
     }
 
-    const storyData = {
-      updatedBy: req.user._id,
-    };
-    if (icon) storyData.icon = icon;
-    if (text) storyData.text = text;
-    if (image) storyData.image = image;
+    const update = { ...req.body };
+    if (image) update.image = image[0].filename;
+    if (profileImage) update.profileImage = profileImage[0].filename;
 
-    if (status) {
-      if (!["ACTIVE", "INACTIVE"].includes(status)) {
-        if (icon) deleteFile(icon);
-        if (image) deleteFile(image);
-        return res
-          .status(400)
-          .json({ message: "Invalid status, can only be ACTIVE OR INACTIVE" });
-      }
-      storyData.status = status;
-    }
-
-    const story = await Story.findByIdAndUpdate(storyId, storyData);
-    if (!story) {
-      if (icon) deleteFile(icon);
-      if (image) deleteFile(image);
-      return res
-        .status(400)
-        .json({ status: "error", message: "something went wrong" });
-    }
-    if (icon) deleteFile(oldStory.icon);
-    if (image) deleteFile(oldStory.image);
+    await Story.findByIdAndUpdate(storyId, update);
 
     return res.status(201).json({
       success: true,
       status: "success",
-      message: "Story Created Successfully",
-      story,
+      message: "Story Updated Successfully",
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ status: "error", message: err.message });
+    next(err);
   }
 }
 
 export async function getStories(req, res) {
-  const { status } = req.query;
-  const q = {};
-  if (status) {
-    if (!["ACTIVE", "INACTIVE"].includes(status)) {
-      return res
-        .status(400)
-        .json({ message: "Invalid status, can only be ACTIVE OR INACTIVE" });
-    }
-    q.status = status;
+  try {
+    const data = await Story.find({});
+    return res.status(200).json({
+      success: true,
+      status: "success",
+      message: "Stories Sent Successfully",
+      data,
+    });
+  } catch (error) {
+    next(error);
   }
-  const story = await Story.find(q);
-  return res
-    .status(200)
-    .json({ success: true,
-      status: "success", message: "Stories Sent Successfully", story });
+}
+
+export async function getStoryById(req, res) {
+  try {
+    const storyId = req.params.storyId;
+    const data = await Story.findById(storyId);
+    return res.status(200).json({
+      success: true,
+      status: "success",
+      message: "Story Sent Successfully",
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export function deleteStory(req, res, next) {
+  const storyId = req.params.storyId;
+  Story.findByIdAndDelete(storyId)
+    .then((data) => {
+      const { image, profileImage } = data;
+      deleteFile(image);
+      deleteFile(profileImage);
+      return res.status(200).json({
+        success: true,
+        status: "success",
+        message: "Story Deleted Successfully",
+      });
+    })
+    .catch(next);
 }

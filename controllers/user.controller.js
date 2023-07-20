@@ -91,7 +91,7 @@ export async function updateUserDetails(req, res) {
     return res.status(400).json({ status: "error", message: "User Not Found" });
 
   res.status(200).json({
-    success : true,
+    success: true,
     status: "success",
     message: "User Details Updated Successfully",
     user: newUser,
@@ -102,7 +102,7 @@ export async function updateUserDetails(req, res) {
 export async function getAllUsers(req, res) {
   const users = await User.find({});
   res.status(200).json({
-    success : true,
+    success: true,
     status: "success",
     message: "All Users",
     users,
@@ -129,7 +129,7 @@ export async function checkUsernameAvailablility(req, res) {
     });
   }
   res.status(200).json({
-    success : true,
+    success: true,
     status: "success",
     message: "Username Available",
   });
@@ -137,7 +137,7 @@ export async function checkUsernameAvailablility(req, res) {
 
 export async function sendProfile(req, res) {
   res.status(200).json({
-    success : true,
+    success: true,
     status: "success",
     message: "Profile Details",
     user: req.user,

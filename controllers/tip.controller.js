@@ -9,6 +9,7 @@ export async function addTip(req, res, next) {
     quantity,
     remark,
     expiryDate,
+    expiryTime,
   } = req.body;
   try {
     await Tip.create({
@@ -19,6 +20,7 @@ export async function addTip(req, res, next) {
       quantity,
       remark,
       expiryDate,
+      expiryTime,
       createdBy: req.user._id,
     });
     return res.status(201).json({
@@ -32,20 +34,38 @@ export async function addTip(req, res, next) {
 }
 
 export async function getTips(req, res, next) {
-  const { status } = req.query;
+  const { status, size, order_by } = req.query;
   if (status) {
-    if (!["EXPIRED", "ACTIVE"].includes(status)) {
+    if (!["expired", "active"].includes(status)) {
       return res.status(400).json({
-        success : false,
+        success: false,
         status: "error",
-        message: "status should be either EXPIRED or ACTIVE",
+        message: "status should be either expired or active",
+      });
+    }
+  }
+  if (order_by) {
+    if (!["latest", "oldest"].includes(order_by)) {
+      return res.status(400).json({
+        success: false,
+        status: "error",
+        message: "order_by should be either latest or oldest",
       });
     }
   }
   try {
-    let tips = await Tip.find({});
+    let tips = Tip.find({});
+    if (order_by) {
+      if (order_by === "latest") {
+        tips.sort({ _id: -1 });
+      }
+    }
+    if (size) {
+      tips = tips.limit(size);
+    }
+    tips = await tips;
     if (status) {
-      if (status === "ACTIVE") {
+      if (status === "active") {
         tips = tips.filter((tip) => tip.expiryDate.valueOf() > Date.now());
       } else {
         tips = tips.filter((tip) => tip.expiryDate.valueOf() < Date.now());
