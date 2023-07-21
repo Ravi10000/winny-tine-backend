@@ -100,12 +100,12 @@ export async function updateUserDetails(req, res) {
 }
 
 export async function getAllUsers(req, res) {
-  const users = await User.find({});
+  const data = await User.find({});
   res.status(200).json({
     success: true,
     status: "success",
     message: "All Users",
-    users,
+    data,
   });
 }
 
