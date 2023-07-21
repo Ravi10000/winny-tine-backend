@@ -167,7 +167,7 @@ export async function addCoinAmount(req, res, next) {
   try {
     const userid = req.user._id;
     const user = await User.findById(userid);
-    user.noofCoins = user.noofCoins + (req.body.amount || 0);
+    user.noofCoins = user.noofCoins + (req.body.coins || 0);
     user.save();
     return res.status(200).json({
       status: "success",

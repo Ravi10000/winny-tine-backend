@@ -11,6 +11,7 @@ import {
   getAllUsers,
   sendProfile,
   updateUserDetails,
+  addCoinAmount,
 } from "../controllers/user.controller.js";
 import upload from "../middlewares/upload.middleware.js";
 
@@ -31,5 +32,6 @@ router.post(
   checkUsernameAvailablility
 );
 router.get("/", fetchUser, isValidUser, isAdmin, getAllUsers);
+router.post("/coins", fetchUser, isValidUser, addCoinAmount);
 
 export default router;
