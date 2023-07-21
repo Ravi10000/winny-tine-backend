@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
     },
     referralCode: { type: String },
+    noofCoins: { type: Number, default: 0, required: true },
   },
   { timestamps: true }
 );

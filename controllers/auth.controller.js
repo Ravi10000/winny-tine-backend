@@ -1,9 +1,7 @@
 import User from "../models/user.model.js";
 import VerificationRequest from "../models/verification-request.model.js";
-import { customOtpGen } from "otp-gen-agent";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-// import ReferralCodeGenerator from "referral-code-generator";
 import uniqid from "uniqid";
 
 export async function generateOTP(req, res) {
@@ -16,10 +14,6 @@ export async function generateOTP(req, res) {
       message: "mobile required",
     });
   }
-
-  //todo
-  // const otp = await customOtpGen({ length: 4, chars: "0123456789" });
-  // console.log({ otp });
 
   const otp = "1111";
 
@@ -94,7 +88,6 @@ export async function verifyOTP(req, res) {
     mobile,
     myReferralCode: uniqid(),
     isVerified: true,
-    // ReferralCodeGenerator.alpha("uppercase", 8) + mobile.toString().slice(-4),
   });
   const token = generateToken(user);
   res.status(200).json({

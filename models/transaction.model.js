@@ -12,20 +12,11 @@ const TransactionSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Initiated','Success','Fail'],
+      enum: ["Initiated", "Success", "Fail"],
       required: true,
     },
     comment: {
       type: String,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-        required: true,
-    },
-    updatedAt: {
-        type: Date,
-        required: false,
     },
   },
   {
