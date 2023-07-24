@@ -43,7 +43,7 @@ export async function updateTransaction(req, res, next) {
 export async function getAllTransaction(req, res, next) {
   try {
     const data = await Transaction.find({ userid: req.user._id });
-    return res.status().json({
+    return res.status(200).json({
       status: "success",
       success: true,
       message: "Transaction Fetched Successfully",
