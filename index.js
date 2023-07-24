@@ -18,6 +18,7 @@ import watchlistRoutes from "./routes/watchlist.route.js";
 import stockRoutes from "./routes/stock.route.js";
 import eventRoutes from "./routes/event.route.js";
 import transactionRoutes from "./routes/transaction.route.js";
+import eodRoutes from "./routes/eodtops.route.js";
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use("/api/watchlist", watchlistRoutes);
 app.use("/api/stocks", stockRoutes);
 app.use("/api/events", eventRoutes);
 app.use("/api/transaction", transactionRoutes);
+app.use("/api/eod", eodRoutes);
 
 const PORT = process.env.PORT || 5000;
 
