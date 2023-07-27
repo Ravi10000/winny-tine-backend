@@ -10,6 +10,9 @@ const storySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    caption: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE"],

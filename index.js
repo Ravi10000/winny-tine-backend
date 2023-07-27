@@ -20,6 +20,7 @@ import eventRoutes from "./routes/event.route.js";
 import transactionRoutes from "./routes/transaction.route.js";
 import eodRoutes from "./routes/eodtops.route.js";
 import indicesRoutes from "./routes/indices.route.js";
+import portfolioRoutes from "./routes/portfolio.route.js";
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use("/api/events", eventRoutes);
 app.use("/api/transaction", transactionRoutes);
 app.use("/api/eod", eodRoutes);
 app.use("/api/indices", indicesRoutes);
+app.use("/api/portfolio", portfolioRoutes);
 
 const PORT = process.env.PORT || 5000;
 
