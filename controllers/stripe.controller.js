@@ -16,7 +16,8 @@ export const stripeWebhook = (req, res) => {
 
   try {
     event = stripe.webhooks.constructEvent(
-      JSON.stringify(req.body),
+      req.body,
+      //   JSON.stringify(req.body),
       sig,
       process.env.STRIPE_TEST_SECRET
     );
