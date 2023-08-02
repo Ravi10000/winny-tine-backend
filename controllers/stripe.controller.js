@@ -7,7 +7,7 @@ const stripe = configureStripe(process.env.STRIPE_SECRET_KEY, {
 import Transaction from "../models/transaction.model.js";
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
-export const stripeWebhook = (req, res) => {
+export const stripeWebhook = async (req, res) => {
   console.log("Webhook called");
   console.log(req.body);
   const sig = req.headers["stripe-signature"];
@@ -33,7 +33,27 @@ export const stripeWebhook = (req, res) => {
     case "payment_intent.succeeded":
       const paymentIntentSucceeded = event.data.object;
       console.log({ paymentIntentSucceeded });
-      //   TODO: update transaction status to success
+      await Transaction.findOneAndUpdate(
+        {
+          paymentIntentId: paymentIntentSucceeded.client_secret,
+        },
+        {
+          status: "Success",
+        }
+      );
+      break;
+    case "payment_intent.failed":
+    case "payment_intent.cancelled":
+      const paymentIntentFailed = event.data.object;
+      console.log({ paymentIntentFailed });
+      await Transaction.findOneAndUpdate(
+        {
+          paymentIntentId: paymentIntentFailed.client_secret,
+        },
+        {
+          status: "Fail",
+        }
+      );
       break;
     default:
       console.log(`Unhandled event type ${event.type}`);
