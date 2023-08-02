@@ -19,6 +19,7 @@ export const stripeWebhook = async (req, res) => {
       req.body,
       //   JSON.stringify(req.body),
       sig,
+      // TODO: replace this with your endpoint secret
       process.env.STRIPE_TEST_SECRET
     );
     console.log({ event });
