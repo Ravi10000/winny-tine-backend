@@ -9,6 +9,7 @@ import uniqid from "uniqid";
 dotenv.config();
 
 export async function generateOTP(req, res) {
+  console.log("generateOTP");
   try {
     const { mobile } = req.body;
 
@@ -19,39 +20,44 @@ export async function generateOTP(req, res) {
     }
 
     const otp = await customOtpGen({ length: 4, chars: "0123456789" });
-
+    console.log({ otp });
     const otpHash = await bcrypt.hash(otp, 10);
     await VerificationRequest.create({
       mobile,
       otpHash,
     });
+    console.log("otpHash", otpHash);
 
-    const { data } = await axios.get(`${process.env.OTP_PROVIDER}/mt/SendSMS`, {
-      params: {
-        user: process.env.OTP_USER,
-        password: process.env.OTP_PASSWORD,
-        senderid: "STOCCK",
-        channel: "trans",
-        dcs: 0,
-        flashsms: 0,
-        number: mobile,
-        text: `Dear customer, your OTP for registration is ${otp} do not share to anyone. Thank you OTPIMS`,
-        route: 10,
-      },
-    });
+    // const { data } = await axios.get(`${process.env.OTP_PROVIDER}/mt/SendSMS`, {
+    //   params: {
+    //     user: process.env.OTP_USER,
+    //     password: process.env.OTP_PASSWORD,
+    //     senderid: "STOCCK",
+    //     channel: "trans",
+    //     dcs: 0,
+    //     flashsms: 0,
+    //     number: mobile,
+    //     text: `Dear customer, your OTP for registration is ${otp} do not share to anyone. Thank you OTPIMS`,
+    //     route: 10,
+    //   },
+    // });
 
-    if (data.ErrorCode !== "000") {
-      let err = new Error("Failed to send OTP");
-      err.status = 400;
-      throw err;
-    }
+    // if (data.ErrorCode !== "000") {
+    //   let err = new Error("Failed to send OTP");
+    //   err.status = 400;
+    //   throw err;
+    // }
     return res.status(200).json({
       success: true,
       status: "success",
       message: "OTP Generated Successfully",
     });
   } catch (error) {
-    next(error);
+    return res.status(error.status || 500).json({
+      success: "error",
+      status: "fail",
+      message: error.message,
+    });
   }
 }
 

@@ -21,6 +21,8 @@ import transactionRoutes from "./routes/transaction.route.js";
 import eodRoutes from "./routes/eodtops.route.js";
 import indicesRoutes from "./routes/indices.route.js";
 import portfolioRoutes from "./routes/portfolio.route.js";
+import stripeRoutes from "./routes/stripe.route.js";
+import { stripeWebhook } from "./controllers/stripe.controller.js";
 
 const app = express();
 
@@ -53,7 +55,9 @@ app.use("/api/transaction", transactionRoutes);
 app.use("/api/eod", eodRoutes);
 app.use("/api/indices", indicesRoutes);
 app.use("/api/portfolio", portfolioRoutes);
+app.use("/api/stripe", stripeRoutes);
 
+app.post("/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 const PORT = process.env.PORT || 5000;
 
 app.get("/api", (req, res) => {

@@ -6,6 +6,10 @@ const TransactionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
+    paymentIntentId: {
+      type: String,
+      required: true,
+    },
     amount: {
       type: Number,
       required: true,
@@ -13,7 +17,7 @@ const TransactionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["Initiated", "Success", "Fail"],
-      required: true,
+      default: "Initiated",
     },
     comment: {
       type: String,
