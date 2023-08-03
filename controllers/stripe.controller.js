@@ -17,7 +17,6 @@ export const stripeWebhook = async (req, res) => {
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
-      //   JSON.stringify(req.body),
       sig,
       // TODO: replace this with your endpoint secret
       process.env.STRIPE_TEST_SECRET
@@ -28,15 +27,15 @@ export const stripeWebhook = async (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
   console.log({ event });
+  const eventData = event.data.object;
+  console.log({ eventData });
 
-  // Handle the event
   switch (event.type) {
     case "payment_intent.succeeded":
-      const paymentIntentSucceeded = event.data.object;
-      console.log({ paymentIntentSucceeded });
+    case "charge.succeeded":
       await Transaction.findOneAndUpdate(
         {
-          paymentIntentId: paymentIntentSucceeded.client_secret,
+          paymentIntentId: eventData.client_secret,
         },
         {
           status: "Success",
@@ -45,11 +44,11 @@ export const stripeWebhook = async (req, res) => {
       break;
     case "payment_intent.failed":
     case "payment_intent.cancelled":
-      const paymentIntentFailed = event.data.object;
-      console.log({ paymentIntentFailed });
+    case "charge.failed":
+    case "charge.cancelled":
       await Transaction.findOneAndUpdate(
         {
-          paymentIntentId: paymentIntentFailed.client_secret,
+          paymentIntentId: eventData.client_secret,
         },
         {
           status: "Fail",
@@ -59,7 +58,7 @@ export const stripeWebhook = async (req, res) => {
     default:
       console.log(`Unhandled event type ${event.type}`);
   }
-  res.status(200).json(JSON.stringify({ received: true }));
+  res.status(200).json({ received: true });
 };
 
 export const initiatePayment = async (req, res) => {
